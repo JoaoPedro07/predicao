@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .preditor import PrevisaoDengue
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, inline_serializer
 from rest_framework import status
 from dataclasses import asdict
 from typing import Dict
@@ -9,6 +10,14 @@ import json
 # Create your views here.
 
 class PredicaoDoenca(APIView):
+    @extend_schema(
+    parameters=[
+            OpenApiParameter('geocodigo', type=int, location='query', description='Geocodigo(disponível na base de dados como referência)'),
+            OpenApiParameter('doenca', type=str, location='query', description='Doença(dengue, zika, chikungunya)'),
+            OpenApiParameter('ano_inicio', type=int, location='query', description='Ano de início(ex: 2015)'),
+            OpenApiParameter('ano_fim', type=int, location='query', description='Ano de fim(ex: 2024)'),
+        ],
+    )
     def post(self, request):
         try:
             geocodigo = request.data.get('geocodigo')
